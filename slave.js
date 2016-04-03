@@ -320,17 +320,27 @@ var sine = [
   0.4920370686999509
 ];
 
-module.exports = function(user) {
+module.exports = function(user, dataType) {
   var client = new osc.Client('0.0.0.0', user.port);
   console.log('Stub for ' + user.username + ' started on port ' + user.port);
 
   Repeat(function() {
-    client.send('/muse/elements/experimental/concentration', sine[index]);
-    client.send('/muse/elements/experimental/mellow', 1 - sine[index]);
-    if (index < sine.length - 1) {
-      index++;
-    } else {
-      index = 0;
+    switch (dataType) {
+      case 'sine':
+        client.send('/muse/elements/experimental/concentration', sine[index]);
+        client.send('/muse/elements/experimental/mellow', 1 - sine[index]);
+        if (index < sine.length - 1) {
+          index++;
+        } else {
+          index = 0;
+        }
+        break;
+      case 'portLSD':
+        client.send('/muse/elements/experimental/concentration', (user.port - 5000) / 10);
+        client.send('/muse/elements/experimental/mellow', (10 - (user.port - 5000)) / 10);
+        break;
+      default:
+
     }
-  }).every(1000, 'ms').start.now();
+  }).every(100, 'ms').start.now();
 };
