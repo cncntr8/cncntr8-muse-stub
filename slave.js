@@ -339,6 +339,16 @@ module.exports = function(user, dataType) {
         client.send('/muse/elements/experimental/concentration', (user.port - 5000) / 10);
         client.send('/muse/elements/experimental/mellow', (10 - (user.port - 5000)) / 10);
         break;
+      case 'sine-portmod':
+        var sinemodded = (sine[index] - ((user.port - 5000) / 20)) || 0;
+        client.send('/muse/elements/experimental/concentration', sinemodded);
+        client.send('/muse/elements/experimental/mellow', 1 - sinemodded);
+        if (index < sine.length - 1) {
+          index++;
+        } else {
+          index = 0;
+        }
+        break;
       default:
 
     }
